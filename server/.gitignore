@@ -1,0 +1,8 @@
+.env
+/node_modules
+.~lock.*
+
+/uploads/server/uploads/
+/uploads
+
+/config/config.json

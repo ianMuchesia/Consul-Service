@@ -1,0 +1,25 @@
+
+
+services:
+  consul-services:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: consul-services-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=StrongP@ssw0rd!  # Replace with a strong password
+      - MSSQL_PID=Express  # Use Express edition (free)
+    ports:
+      - "1434:1433"  # Map container port to host port
+    volumes:
+      - mssql-data:/var/opt/mssql
+    networks:
+      - consul-network
+    restart: unless-stopped
+
+networks:
+  consul-network:
+    driver: bridge
+
+volumes:
+  mssql-data:
+    driver: local
