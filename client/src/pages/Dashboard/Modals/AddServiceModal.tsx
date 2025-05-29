@@ -179,22 +179,28 @@ const AddServiceModal = ({ openModal, handleCloseModal,parentName }: Props) => {
       // Convert tag fields to simple string array
       data.tags = tagFields.map(field => field.value) as unknown as TagField[];
 
-      if (isEditMode && service) {
-        // Update existing service
-        await updateService({
-          id: service.service_id,
-          data
-        }).unwrap();
-        toast.success('Service updated successfully');
-      } else if (parentName) {
-        // Add service to existing parent
-        await createService(data).unwrap();
-        toast.success('Service created successfully');
-      } else {
-        // Create new parent with service
-        await createParentWithServices(data).unwrap();
-        toast.success('Service and parent created successfully');
-      }
+
+      console.log('Submitting service data:', data);
+      console.log("Is Edit Mode:", isEditMode);
+      console.log("Parent Name:", parentName);
+      console.log("service:", service);
+
+      // if (isEditMode && service) {
+      //   // Update existing service
+      //   await updateService({
+      //     id: service.service_id,
+      //     data
+      //   }).unwrap();
+      //   toast.success('Service updated successfully');
+      // } else if (parentName) {
+      //   // Add service to existing parent
+      //   await createService(data).unwrap();
+      //   toast.success('Service created successfully');
+      // } else {
+      //   // Create new parent with service
+      //   await createParentWithServices(data).unwrap();
+      //   toast.success('Service and parent created successfully');
+      // }
       
       reset();
       setMetaEntries([]);

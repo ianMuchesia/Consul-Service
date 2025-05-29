@@ -1,6 +1,7 @@
 const express = require("express");
 const errors = require("../errors");
 const { ValidateServiceData } = require("../utils/validate");
+const { consulCreateExternalService, consulDeleteExternalService } = require("../utils/consulservice");
 
 
 const serviceController = express.Router();
@@ -70,6 +71,7 @@ const CreateService = async (req, res) => {
         meta: req.body.Meta || {},
         check: req.body.Check || null,
     });
+    await consulCreateExternalService(req.body);
 
     // Fetch the service with its parent for the response
     const serviceWithParent = await Service.findOne({
@@ -92,15 +94,43 @@ const GetServiceByParentId = async (req, res) => {
 
 const UpdateService = async (req, res) => {
     const { id } = req.params;
-    const { name, description, parent_id } = req.body;
     const service = await Service.findByPk(id);
     if (!service) {
         throw new errors.NotFoundError(`Service with id ${id} not found`);
     }
-    service.name = name;
-    service.description = description;
-    service.parent_id = parent_id;
+    
+
+    // Validate request body
+    ValidateServiceData(req.body);
+
+    // Update service properties
+    service.aid = req.body.Name;
+    service.address = req.body.Address;
+    service.port = req.body.Port;
+
+    service.tags = req.body.tags || [];
+    service.meta = req.body.Meta || {};
+    service.check = req.body.Check || null;
+
+    // If the parent name is provided, find the parent and update the service's parent_id
+    if (req.body.Name) {
+        const parent = await Parent.findOne({
+            where: { name: req.body.Name },
+        });
+
+        if (!parent) {
+            throw new errors.NotFoundError(`Parent with name ${req.body.Name} not found`);
+        }
+
+        service.parent_id = parent.id;
+    }
+
+    // Save the updated service
+
     await service.save();
+
+    await consulDeleteExternalService(service.service_id);
+    await consulCreateExternalService(req.body);
     res.status(200).json(service);
 };
 
@@ -111,6 +141,8 @@ const DeleteService = async (req, res) => {
         throw new errors.NotFoundError(`Service with id ${id} not found`);
     }
     await service.destroy();
+
+    await consulDeleteExternalService(service.service_id);
     res.status(204).send();
 };
 
