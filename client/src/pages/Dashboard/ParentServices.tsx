@@ -11,6 +11,7 @@ import IconLoader from '../../components/Icon/IconLoader';
 import { useGetParentByIdQuery, useGetServicesByParentIdQuery } from '../../store/services/apiService';
 import { Service } from '../../@types/services';
 import AddServiceModal from './Modals/AddServiceModal';
+import DeleteConfirmationModal from './Modals/DeleteConfirmationModal';
 
 const ParentServices = () => {
   const { parentId } = useParams<{ parentId: string }>();
@@ -178,16 +179,13 @@ const ParentServices = () => {
       )}
 
       {/* Delete Confirmation Modal */}
-      {/* {openModal.isOpen && openModal.modalName === "DELETE-SERVICE" && selectedService && (
+      {openModal.isOpen && openModal.modalName === "DELETE-SERVICE" && selectedService && (
         <DeleteConfirmationModal
           openModal={openModal}
           handleCloseModal={handleCloseModal}
-          title="Delete Service"
-          message={`Are you sure you want to delete service "${selectedService.id}"?`}
-          onConfirm={() => handleDelete(selectedService.service_id)}
-          isLoading={isDeleting}
+        
         />
-      )} */}
+      )}
     </div>
   );
 };

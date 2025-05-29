@@ -2,6 +2,9 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment } from 'react';
 import IconX from '../../../components/Icon/IconX';
+import { useDeleteServiceMutation } from '../../../store/services/apiService';
+import toast from 'react-hot-toast';
+import IconLoader from '../../../components/Icon/IconLoader';
 
 
 interface Props {
@@ -15,8 +18,21 @@ interface Props {
 }
 
 const DeleteConfirmationModal = ({ openModal, handleCloseModal }: Props) => {
+
+  const [deleteService, { isLoading }] = useDeleteServiceMutation();
+
+
+  const handleDelete = async () => {
+    try {
+      await deleteService(openModal.id).unwrap();
+      toast.success('Service deleted successfully');
+      handleCloseModal();
+    } catch (error) {
+      console.error('Failed to delete service:', error);
+    }
+  };
   return (
-    <Transition appear show={openModal.isOpen} as={Fragment}>
+    <Transition appear show={openModal.isOpen && (openModal.modalName == 'DELETE-SERVICE')} as={Fragment}>
       <Dialog as="div" open={openModal.isOpen} onClose={handleCloseModal}>
         <Transition.Child as={Fragment} enter="ease-out duration-300" enterFrom="opacity-0" enterTo="opacity-100" leave="ease-in duration-200" leaveFrom="opacity-100" leaveTo="opacity-0">
           <div className="fixed inset-0" />
@@ -59,18 +75,18 @@ const DeleteConfirmationModal = ({ openModal, handleCloseModal }: Props) => {
                       <button
                         type="button"
                         className="btn btn-danger"
-                        // onClick={onConfirm}
-                        // disabled={isLoading}
+                        onClick={handleDelete}
+                        disabled={isLoading}
                       >
-                        {/* {isLoading ? (
+                        {isLoading ? (
                           <span className="flex items-center gap-2">
                             <IconLoader className="animate-spin w-4 h-4" />
                             Deleting...
                           </span>
                         ) : (
                           'Delete'
-                        )} */}
-                        Delete
+                        )}
+                       
                       </button>
                     </div>
                   </div>
