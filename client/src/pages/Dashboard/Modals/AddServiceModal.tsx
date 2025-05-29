@@ -174,10 +174,15 @@ const AddServiceModal = ({ openModal, handleCloseModal,parentName }: Props) => {
         }
       });
 
+
+
       data.Check = checkObject;
       
+      console.log(tagFields);
       // Convert tag fields to simple string array
       data.tags = tagFields.map(field => field.value) as unknown as TagField[];
+
+      console.log(data.tags);
 
 
 
