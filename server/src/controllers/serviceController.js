@@ -136,15 +136,15 @@ const UpdateService = async (req, res) => {
 
 const DeleteService = async (req, res) => {
     const { id } = req.params;
-    // const service = await Service.findOne({
-    //     where: { id },
-    // });
-    // if (!service) {
-    //     throw new errors.NotFoundError(`Service with id ${id} not found`);
-    // }
-    // await service.destroy();
+    const service = await Service.findOne({
+        where: { id },
+    });
+    if (!service) {
+        throw new errors.NotFoundError(`Service with id ${id} not found`);
+    }
+    await service.destroy();
 
-    await consulDeleteExternalService("web-1");
+    await consulDeleteExternalService(service.id);
     res.status(204).send();
 };
 
