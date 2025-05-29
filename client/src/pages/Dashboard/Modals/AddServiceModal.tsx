@@ -86,7 +86,7 @@ const AddServiceModal = ({ openModal, handleCloseModal,parentName }: Props) => {
       // Set tags
       if (service.tags && Array.isArray(service.tags)) {
         service.tags.forEach(tag => {
-          appendTag({ id: `tag-${Date.now()}-${Math.random()}`, value: tag.value });
+          appendTag({ id: `tag-${Date.now()}-${Math.random()}`, value: tag });
         });
       }
       

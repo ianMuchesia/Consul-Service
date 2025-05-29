@@ -119,7 +119,7 @@ const ParentServices = () => {
                   <div className="flex flex-wrap gap-1">
                     {row.tags?.map((tag, index: number) => (
                       <span key={index} className="badge bg-info p-1.5 text-xs">
-                        {tag.value}
+                        {tag}
                       </span>
                     )) || 'No tags'}
                   </div>

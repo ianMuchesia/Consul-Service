@@ -11,7 +11,7 @@ export interface Service {
   aid: string;
   address: string;
   port: number;
-  tags: TagField[] | null;
+  tags: string[] | null;
   meta: Record<string, string> | null;
   check: Record<string, string> | null;
   parent?: Parent;
