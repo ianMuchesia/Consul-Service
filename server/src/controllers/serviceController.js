@@ -136,7 +136,9 @@ const UpdateService = async (req, res) => {
 
 const DeleteService = async (req, res) => {
     const { id } = req.params;
-    const service = await Service.findByPk(id);
+    const service = await Service.findOne({
+        where: { id },
+    });
     if (!service) {
         throw new errors.NotFoundError(`Service with id ${id} not found`);
     }
