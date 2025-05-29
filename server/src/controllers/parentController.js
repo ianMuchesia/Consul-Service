@@ -1,7 +1,7 @@
 const express = require("express");
 const errors = require("../errors");
 const { ValidateServiceData } = require("../utils/validate");
-const { consulCreateExternalService } = require("../utils/consulservice");
+const { consulCreateExternalService, consulDeleteExternalService } = require("../utils/consulservice");
 
 const parentController = express.Router();
 
@@ -16,8 +16,8 @@ module.exports = (_parent, _service) => {
   parentController.post("/", CreateParent);
   parentController.get("/", GetParents);
   parentController.get("/:id", GetParentById);
-  // parentController.put("/:id", UpdateParent);
-  // parentController.delete("/:id", DeleteParent);
+  parentController.put("/:id", UpdateParent);
+  parentController.delete("/:id", DeleteParent);
 
   return parentController;
 };
@@ -106,3 +106,31 @@ const GetParentById = async (req, res) => {
   }
   res.status(200).json(parent);
 };
+
+
+const DeleteParent = async (req, res) => {
+  const { id } = req.params;
+  const parent = await Parent.findOne({ where: { id } ,include: [{ model: Service, as: "services" }] });
+  if (!parent) {
+    throw new errors.NotFoundError(`Parent with id ${id} not found`);
+  }
+
+
+  console.log(`Deleting parent with id ${id} and its associated services...`);
+  console.log("Services to be deleted:", parent.services);
+
+  for (const service of parent.services) {
+    // Delete the service from Consul
+   await consulDeleteExternalService(service.service_id);
+  }
+
+  // Delete associated services
+  await Service.destroy({ where: { parent_id: id } });
+
+  // Delete the parent
+  await Parent.destroy({ where: { id } });
+
+
+
+  res.status(204).send();
+}

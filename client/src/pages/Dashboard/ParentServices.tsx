@@ -59,7 +59,7 @@ const ParentServices = () => {
           </Link>
         </li>
         <li className="before:content-['/'] ltr:before:mr-2 rtl:before:ml-2">
-          <Link to="/parents" className="text-primary hover:underline">
+          <Link to="/" className="text-primary hover:underline">
             Parents
           </Link>
         </li>
