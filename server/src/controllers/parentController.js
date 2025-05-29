@@ -1,6 +1,7 @@
 const express = require("express");
 const errors = require("../errors");
 const { ValidateServiceData } = require("../utils/validate");
+const { consulCreateExternalService } = require("../utils/consulservice");
 
 const parentController = express.Router();
 
@@ -11,10 +12,7 @@ module.exports = (_parent, _service) => {
   Parent = _parent;
   Service = _service;
 
-  parentController.post(
-    "/with-services",
-    CreateParentWithServices
-  );
+  parentController.post("/with-services", CreateParentWithServices);
   parentController.post("/", CreateParent);
   parentController.get("/", GetParents);
   parentController.get("/:id", GetParentById);
@@ -23,8 +21,6 @@ module.exports = (_parent, _service) => {
 
   return parentController;
 };
-
-
 
 const CreateParentWithServices = async (req, res) => {
   const serviceData = req.body;
@@ -46,6 +42,8 @@ const CreateParentWithServices = async (req, res) => {
       meta: serviceData.Meta || {},
       check: serviceData.Check || null,
     });
+
+    await consulCreateExternalService(req.body);
 
     const result = await Parent.findOne({
       where: { id: parent.id },

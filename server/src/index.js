@@ -3,6 +3,7 @@ require("express-async-errors");
 
 const fs = require("fs");
 const { Sequelize } = require("sequelize");
+const cors = require("cors");
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
@@ -38,6 +39,8 @@ const app = express();
 //   })
 // );
 
+
+app.use(cors("*"));
 app.use(bodyParser.json({limit:'4mb'}));
 app.use(morgan("combined"));
 app.use(bodyParser.urlencoded({ extended: true, limit: '4mb' }));
