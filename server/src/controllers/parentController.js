@@ -16,7 +16,7 @@ module.exports = (_parent, _service) => {
   parentController.post("/", CreateParent);
   parentController.get("/", GetParents);
   parentController.get("/:id", GetParentById);
-  parentController.put("/:id", UpdateParent);
+ // parentController.put("/:id", UpdateParent);
   parentController.delete("/:id", DeleteParent);
 
   return parentController;
