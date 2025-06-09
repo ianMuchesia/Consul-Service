@@ -10,13 +10,7 @@ export const apiService = createApi({
     // Parent endpoints
     getParents: builder.query<Parent[], void>({
       query: () => '/parents',
-      providesTags: (result) => 
-        result
-          ? [
-              ...result.map(({ id }) => ({ type: 'Parent' as const, id })),
-              { type: 'Parent', id: 'LIST' }
-            ]
-          : [{ type: 'Parent', id: 'LIST' }],
+      providesTags:["Parent"]
     }),
     
     getParentById: builder.query<Parent, string>({
@@ -30,7 +24,7 @@ export const apiService = createApi({
         method: 'POST',
         body: data,
       }),
-      invalidatesTags: [{ type: 'Parent', id: 'LIST' }],
+      invalidatesTags: ["Parent"],
     }),
     
     createParentWithServices: builder.mutation<Parent, ServiceFormData>({
@@ -40,37 +34,24 @@ export const apiService = createApi({
         body: data,
       }),
       invalidatesTags: [
-        { type: 'Parent', id: 'LIST' },
-        { type: 'Service', id: 'LIST' }
+      "Parent", "Service"
       ],
     }),
     
     // Service endpoints
     getServices: builder.query<Service[], void>({
       query: () => '/services',
-      providesTags: (result) => 
-        result
-          ? [
-              ...result.map(({ service_id }) => ({ type: 'Service' as const, id: service_id })),
-              { type: 'Service', id: 'LIST' }
-            ]
-          : [{ type: 'Service', id: 'LIST' }],
+      providesTags: ["Service"]
     }),
     
     getServiceById: builder.query<Service, string>({
       query: (id) => `/services/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Service', id }],
+      providesTags: ["Service"]
     }),
     
     getServicesByParentId: builder.query<Service[], string>({
       query: (parentId) => `/services/parent/${parentId}`,
-      providesTags: (result, error, parentId) => 
-        result
-          ? [
-              ...result.map(({ service_id }) => ({ type: 'Service' as const, id: service_id })),
-              { type: 'Service', id: `parent-${parentId}` }
-            ]
-          : [{ type: 'Service', id: `parent-${parentId}` }],
+      providesTags: ["Service"]
     }),
     
     createService: builder.mutation<Service, ServiceFormData>({
@@ -80,8 +61,7 @@ export const apiService = createApi({
         body: data,
       }),
         invalidatesTags: [
-        { type: 'Parent', id: 'LIST' },
-        { type: 'Service', id: 'LIST' }
+       "Service", "Parent"
       ],
     }),
     
@@ -91,7 +71,7 @@ export const apiService = createApi({
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: (result, error, { id }) => [{ type: 'Service', id }],
+      invalidatesTags: ["Service"]
     }),
     
     deleteService: builder.mutation<void, string>({
@@ -100,8 +80,7 @@ export const apiService = createApi({
         method: 'DELETE',
       }),
       invalidatesTags: (result, error, id) => [
-        { type: 'Service', id },
-        { type: 'Service', id: 'LIST' }
+       "Service", "Parent" // Assuming deleting a service might affect the parent as well
       ],
     }),
   }),
